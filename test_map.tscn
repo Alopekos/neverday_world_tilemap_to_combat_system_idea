@@ -727,11 +727,15 @@ shape = SubResource("RectangleShape2D_qgarv")
 position = Vector2(337, 136)
 shape = SubResource("RectangleShape2D_r0pc2")
 
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="Collisions/StaticBody2D" unique_id=2109568465]
+position = Vector2(124, 34)
+shape = SubResource("RectangleShape2D_r0pc2")
+
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Collisions/StaticBody2D" unique_id=851751298]
 position = Vector2(95.5, 71)
 shape = SubResource("RectangleShape2D_ssfg1")
 
 [node name="PlayerCamera" type="Camera2D" parent="." unique_id=1573145982]
 unique_name_in_owner = true
-position = Vector2(196, 32)
-zoom = Vector2(4, 4)
+position = Vector2(201, 103)
+zoom = Vector2(3, 3)

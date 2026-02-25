@@ -9,59 +9,64 @@ func _ready() -> void:
 	get_output(created_map)
 
 
-func get_visible_background_matrix(layer : TileMapLayer, camera : Camera2D) -> Array:
+func get_visible_background_matrix(tilemap : TileMapLayer, camera : Camera2D) -> Array:
 
-	# Get the TileSet and tile size
-	var ts := layer.tile_set
-	var tile_size: Vector2 = ts.tile_size
-	
-	# Compute world bounds of the viewport
-	var viewport_rect = get_viewport().get_visible_rect()
-	var world_size = viewport_rect.size / camera.zoom
-	var world_start = camera.global_position - world_size * 0.5
+	var tile_size: Vector2 = tilemap.tile_set.tile_size
+	var camera_rect : Rect2 = get_camera_view_rect(camera)
 
 	# Convert world bounds to cell range
-	var start_cell = (world_start / tile_size).floor()
-	var end_cell = ((world_start + world_size) / tile_size).ceil()
+	var start_cell = (camera_rect.position / tile_size).ceil()
+	var end_cell = ((camera_rect.position + camera_rect.size) / tile_size).floor()
 
 	var matrix := []
 	var space_state = get_world_2d().direct_space_state
 
-	# Prepare a reusable rectangle shape:
-	var center_shape = CircleShape2D.new()
-	center_shape.radius = 2.0   # small radius (1–4 pixels works well)
+	# Prepare a reusable circle shape
+	var center_shape : CircleShape2D = CircleShape2D.new()
+	center_shape.radius = 2.0 
 
-
-
-	# Query parameters (we reuse them)
-	var shape_query := PhysicsShapeQueryParameters2D.new()
-	shape_query.shape = center_shape
+	# Query parameters of shape circle that gets reused
+	var query : PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
+	query.shape = center_shape
 
 	for y in range(start_cell.y, end_cell.y):
-		var row := []
+		var row : Array = []
 		for x in range(start_cell.x, end_cell.x):
 			# compute world center of tile
 			var cell = Vector2i(x, y)
-			var cell_center = Vector2((x + 0.5) * tile_size.x, (y + 0.5) * tile_size.y)
+			var cell_pos = get_tile_pos(cell, tile_size)
+			var cell_rect = Rect2(cell_pos, tile_size)
 
-			# set circle for query transform
-			shape_query.transform = Transform2D(0, cell_center)
+			#Check if cell is fully display and not cut in half
+			if not camera_rect.encloses(cell_rect):
+				continue
+
+			var center = cell_rect.get_center()
+			query.transform = Transform2D(0, center)
 
 			# check for tile and collisions
-			var found_tile : bool = has_tile(layer, cell)
-			var found_collisions : bool = has_collisions(space_state, shape_query)
+			var tile_exists : bool = tilemap.get_cell_source_id(cell) != -1
+			var collision_exists : bool = space_state.intersect_shape(query).size() > 0
 
-			var walkable: bool = found_tile and not found_collisions
+			var walkable: bool = tile_exists and not collision_exists
+			
+			#TODO depending on terrain and map change 1 to 2,3,4 etc.
 			row.append(1 if walkable else 0)
 		matrix.append(row)
 
 	return matrix
 
-func has_collisions(space_state, shape_query)-> bool:
-	return space_state.intersect_shape(shape_query).size() > 0
 
-func has_tile(layer, cell) -> bool:
-	return layer.get_cell_source_id(cell) != -1
+func get_camera_view_rect(camera: Camera2D) -> Rect2:
+	var viewport_size : Vector2 = get_viewport().get_visible_rect().size
+	var world_size : Vector2 = viewport_size / camera.zoom
+	var world_position : Vector2 = camera.global_position - world_size * 0.5
+	
+	return Rect2(world_position, world_size)
+
+
+func get_tile_pos(cell: Vector2i, tile_size: Vector2)-> Vector2:
+	return Vector2(cell.x * tile_size.x, cell.y * tile_size.y)
 
 
 func get_output(output: Array) -> void:
