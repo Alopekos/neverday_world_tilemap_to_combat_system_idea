@@ -4,9 +4,12 @@ Hey! This little project is a **dynamic grid of tiles** that adapts to a 2D Godo
 It checks if a tile exists and isn’t blocked by collisions.  
 For now it spawns a fake visual `tile_grid` 🔳 but could easily be expanded into a combat or pathfinding system.
 
-Don't ask about Neverday though : 
+Don't ask about Neverday when though : 
 
-<img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWZqbnRmZ3VxMTAyMnAzODhob2N0NTNybzkwbmRsZGdnNGU0OTdtcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/901mxGLGQN2PyCQpoc/giphy.gif" width="200" height="200">
+![giphy](https://github.com/user-attachments/assets/7adf3781-f171-442d-ae47-125a39aabf97)
+
+( or Neverday where or Neverday ever or Never Neverday Ever Neverday or Ever Never )
+
 ---
 
 ## 🎮 How to Test It
