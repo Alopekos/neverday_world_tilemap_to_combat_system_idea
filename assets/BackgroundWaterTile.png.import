@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c831idr73h2qq"
-path="res://.godot/imported/grass.png-79cf597cc1adecdff9d12adae9606f9b.ctex"
+uid="uid://t7lqnax2uysp"
+path="res://.godot/imported/BackgroundWaterTile.png-d85bdd632bc5447732a5da1959f80854.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://grass.png"
-dest_files=["res://.godot/imported/grass.png-79cf597cc1adecdff9d12adae9606f9b.ctex"]
+source_file="res://assets/BackgroundWaterTile.png"
+dest_files=["res://.godot/imported/BackgroundWaterTile.png-d85bdd632bc5447732a5da1959f80854.ctex"]
 
 [params]
 

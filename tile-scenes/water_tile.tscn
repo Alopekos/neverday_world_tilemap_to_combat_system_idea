@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://cqjao80ty7ubn"]
+[gd_scene format=3 uid="uid://dgdcl5adywn2t"]
 
-[ext_resource type="Texture2D" uid="uid://c2ym20exf1tth" path="res://FightTile.png" id="1_n3f48"]
-[ext_resource type="Script" uid="uid://bldiukva300yv" path="res://tile.gd" id="1_vx4y2"]
+[ext_resource type="Script" uid="uid://bldiukva300yv" path="res://scripts/tile.gd" id="1_jmgne"]
+[ext_resource type="Texture2D" uid="uid://dp27ad6ip152b" path="res://assets/WaterTile.png" id="2_jmgne"]
 
 [sub_resource type="Animation" id="Animation_n3f48"]
 length = 0.001
@@ -28,6 +28,34 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(0, 20)]
+}
+
+[sub_resource type="Animation" id="Animation_jmgne"]
+resource_name = "click_tile"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Tile:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 1), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Tile:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0.4627451), Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_vx4y2"]
@@ -60,12 +88,13 @@ tracks/1/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_a2t34"]
 _data = {
 &"RESET": SubResource("Animation_n3f48"),
+&"click_tile": SubResource("Animation_jmgne"),
 &"show_tile": SubResource("Animation_vx4y2")
 }
 
-[node name="Tile" type="Node2D" unique_id=1148134179]
+[node name="WaterTile" type="Node2D" unique_id=1148134179]
 self_modulate = Color(1, 1, 1, 0)
-script = ExtResource("1_vx4y2")
+script = ExtResource("1_jmgne")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1866455130]
 unique_name_in_owner = true
@@ -74,4 +103,23 @@ libraries/ = SubResource("AnimationLibrary_a2t34")
 [node name="Tile" type="Sprite2D" parent="." unique_id=852173655]
 self_modulate = Color(1, 1, 1, 0)
 position = Vector2(0, 20)
-texture = ExtResource("1_n3f48")
+texture = ExtResource("2_jmgne")
+
+[node name="Button" type="Button" parent="." unique_id=368415478]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(16, 16)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
+[connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
