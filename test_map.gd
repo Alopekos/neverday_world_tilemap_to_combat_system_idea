@@ -3,14 +3,18 @@ extends Node2D
 @onready var player_camera: Camera2D = %PlayerCamera
 @onready var background: TileMapLayer = %Background
 
+const TILE = preload("uid://cqjao80ty7ubn")
+
+var tile_grid : Array = []
+
 func _ready() -> void:
-	await get_tree().create_timer(1).timeout
-	var created_map: Array = get_visible_background_matrix(background, player_camera)
-	get_output(created_map)
+	var created_map: Array = await get_visible_background_matrix(background, player_camera)
+	create_map(created_map, player_camera, background)
+	show_map()
 
 
 func get_visible_background_matrix(tilemap : TileMapLayer, camera : Camera2D) -> Array:
-
+	await get_tree().physics_frame
 	var tile_size: Vector2 = tilemap.tile_set.tile_size
 	var camera_rect : Rect2 = get_camera_view_rect(camera)
 
@@ -69,6 +73,46 @@ func get_tile_pos(cell: Vector2i, tile_size: Vector2)-> Vector2:
 	return Vector2(cell.x * tile_size.x, cell.y * tile_size.y)
 
 
+func create_map(output: Array, camera: Camera2D, tilemap: TileMapLayer) -> void:
+	if output.is_empty():
+		return
+	
+	empty_grid(output)
+	
+	var tile_size : Vector2 = tilemap.tile_set.tile_size
+	var camera_rect : Rect2 = get_camera_view_rect(camera)
+	var start_cell = (camera_rect.position / tile_size).ceil()
+
+	for y in range(output.size()):
+		for x in range(output[y].size()):
+			if output[y][x] == 1:
+				var tile : Node2D = TILE.instantiate()
+				tile.scale = camera.zoom
+				var world_pos = Vector2(
+					(start_cell.x + x) * tile_size.x + (tile_size.x / 2),
+					(start_cell.y + y) * tile_size.y + (tile_size.y / 2)
+				)
+
+				var screen_pos = get_viewport().get_canvas_transform() * world_pos 
+
+				tile.position = screen_pos
+				
+				%MapInstantializer.add_child(tile)
+				tile_grid[y][x] = tile
+
+func show_map() -> void:
+	for i :int in range(tile_grid.size()):
+		for j : int in range(tile_grid[0].size()):
+			if tile_grid[i][j]:
+				tile_grid[i][j].play_anim()
+		await get_tree().create_timer(0.2).timeout
+
 func get_output(output: Array) -> void:
 	for row in output:
 		print(row)
+
+func empty_grid(output: Array) -> void:
+	for y in range(output.size()):
+		tile_grid.append([])
+		for x in range(output[y].size()):
+			tile_grid[y].append(null)
